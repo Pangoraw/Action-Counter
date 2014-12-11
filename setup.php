@@ -136,7 +136,7 @@
 	<link rel="stylesheet" href="data/fonts/stylesheet.css" media="screen" />
 </head>
 <body>
-	<h1>Action Counter</h1>
+	<a href="index.php"><h1>Action Counter</h1></a>
 	<div id="content" >
 		<div class="form-wrapper" id="SQL_Setup">
 			<?php 

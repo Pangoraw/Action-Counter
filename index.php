@@ -4,6 +4,8 @@
 	<meta charset="UTF-8" />
 	<title>Projet - Home - DEV</title>
 	<link href="stylesheet/index.css" rel="stylesheet" media="all" type="text/css" ></link>
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="data/fonts/stylesheet.css" media="screen" />
 	<script type="text/javascript" src="script/js/googlejsapi.js"></script>
 	<script type="text/javascript" src="script/js/jquery.min.js"></script>
 </head>
@@ -14,7 +16,14 @@
 	$arg = 'mysql:host='.$options['hostname'].';dbname='.$options['databasename'];
 
 	// Connect to the database
-	$dataBase = new PDO($arg, $options['username'] , $options['dbpassword'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)); 
+	try
+	{
+		$dataBase = new PDO($arg, $options['username'] , $options['dbpassword']); 
+	}
+	catch (Exception $e)
+	{
+		header('Location: setup.php');
+	}
 	
 	// Prepare the MySql request's code
 	$reqName = $dataBase->prepare('SELECT name FROM `user`');
@@ -24,15 +33,14 @@
 
 	?>
 
-	<h1>Welcome in the Projet's Home: Action.</h1>
-	<fieldset><legend>Select a new action maker.</legend>
+	<h1>Action Counter</h1>
+	
 	<?php 
 
 	createRadioForm($reqName);
 
 	 ?>	
-	</fieldset>
-	<div id="chartDiv" ></div>
+	<div id="chart-div" ></div>
 	<?php 
 
 	$acterStat = countByName($reqName, $reqActerName);
@@ -50,9 +58,14 @@
 	}
 
 
-	function createRadioForm($req) // Function which is in charge to create the radio formular 
-	{
-		echo '<form action="script/set.php" method="POST"/>';
+	function createRadioForm ( $req ) // Function which is in charge to create the radio formular 
+	{	?>
+		<div class="form-wrapper" >
+		<h2 class="form-title" >Select a new action maker.</h2>
+		<form action="script/php/set.php" class="form" method="POST">
+		<div class="form-div" >
+		<ul>
+		<?php
 		$i = 0;
 		$req->execute();
 		while ($data = $req->fetch()) {
@@ -62,18 +75,21 @@
 
 			if ($i > 1) {
 
-				echo '<input type="radio" name="setter" value="' . $userName . '"  /><label>'. $userName . '</label>' ;
+				echo '<li><input type="radio" name="setter" value="' . $userName . '"  /><label>'. $userName . '</label></li>' ;
 
 			}
 			else {
 
-				echo '<input type="radio" name="setter" value="' . $userName . '" checked/><label>'. $userName . '</label>' ;
+				echo '<li><input type="radio" name="setter" value="' . $userName . '" checked/><label>'. $userName . '</label></li>' ;
 
 			}
-		}
-
-		echo '<br /><input type="submit" id="button" />';
-		echo '</form>';
+		}?>
+			</ul>
+			</div>
+			<label><input type="submit" id="button" class="hidden-button"/><img alt="Submit" src="data/images/submit-button.svg"></label>
+			</form>
+		</div>
+	<?php
 	}
 
 	function countByName($reqName, $reqCountByName) // Return a string of the form '#UserName#UserActionTimeUser2Name#User2ActionTime etc ...'
@@ -139,11 +155,17 @@
 				}
 			}
 
-			var options = {'title': 'Action Repartition',
-							'width': '400',
-							'height': '300'};
+			var options = {title: 'Action Repartition',
+							width: '400',
+							height: '300',
+							legend: 'none',
+							backgroundColor: '#2b1100',
+							pieSliceTextStyle: {'color': 'white'},
+							titleTextStyle: {'color': 'white', bold: true},
+							tooltip: {textStyle: { color:'black' }}
+						};
 
-			var chart = new google.visualization.PieChart(document.getElementById('chartDiv'));
+			var chart = new google.visualization.PieChart(document.getElementById('chart-div'));
 			chart.draw(data, options);
 		}
 
