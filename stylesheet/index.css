@@ -1,0 +1,15 @@
+body {
+	padding: 0;
+	margin: 0;
+	text-align: center;
+}
+#chartDiv {
+	margin-right: auto;
+	margin-left: auto;
+	width: 400px;
+}
+#button {
+	margin: 5px;
+	background-color: grey;
+	border: 3px ridge black;
+}
