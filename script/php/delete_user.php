@@ -22,15 +22,21 @@
 	{
 		foreach ($_POST['check_list'] as $idChecked) 
 		{
-			$dataBase->exec(getCommand($idChecked));
+			$dataBase->exec(getCommandUser($idChecked));
+			$dataBase->exec(getCommandAction($idChecked));
 			print '<p>deleted id n°' .$idChecked.'</p>';
 		}
 	}
 	header("location: ../../setup.php");
 
-	function getCommand ($id)
+	function getCommandUser ( $id )
 	{
 		return 'DELETE FROM `user` WHERE id="'.$id.'"';
+	}
+
+	function getCommandAction ( $id )
+	{
+		return 'DELETE FROM `set` WHERE idUser="'.$id.'"';
 	}
 
 	function getOptions ()

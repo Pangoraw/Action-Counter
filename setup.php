@@ -32,6 +32,7 @@
 				(
 					id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 					name VARCHAR(100),
+					idUser INT,
 					date DATE,
 					action VARCHAR(100)
 				)');			

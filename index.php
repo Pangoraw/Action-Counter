@@ -26,7 +26,7 @@
 	}
 	
 	// Prepare the MySql request's code
-	$reqName = $dataBase->prepare('SELECT name FROM `user`');
+	$reqName = $dataBase->prepare('SELECT * FROM `user`');
 	$reqActerName = $dataBase->prepare('SELECT COUNT(*) as countByName, name FROM `set` WHERE name = :name ');
 	$reqTotalActer = $dataBase->prepare('SELECT COUNT(*) as total FROM `user`');
 	$reqTotalAction = $dataBase->prepare('SELECT COUNT(*) as total FROM `set`');
@@ -69,18 +69,18 @@
 		$i = 0;
 		$req->execute();
 		while ($data = $req->fetch()) {
-
+			$userId   = $data['id'];
 			$userName = $data['name'];
 			$i = $i + 1;
 
 			if ($i > 1) {
 
-				echo '<li><input type="radio" name="setter" value="' . $userName . '"  /><label>'. $userName . '</label></li>' ;
+				echo '<li><input type="radio" name="idUser" value="' . $userId . '"  /><label>'. $userName . '</label></li>' ;
 
 			}
 			else {
 
-				echo '<li><input type="radio" name="setter" value="' . $userName . '" checked/><label>'. $userName . '</label></li>' ;
+				echo '<li><input type="radio" name="idUser" value="' . $userId . '" checked/><label>'. $userName . '</label></li>' ;
 
 			}
 		}?>
@@ -155,14 +155,14 @@
 				}
 			}
 
-			var options = {title: 'Action Repartition',
+			var options = { title: 'Action Repartition',
 							width: '400',
 							height: '300',
 							legend: 'none',
 							backgroundColor: '#2b1100',
 							pieSliceTextStyle: {'color': 'white'},
 							titleTextStyle: {'color': 'white', bold: true},
-							tooltip: {textStyle: { color:'black' }}
+							tooltip: {textStyle: { color:'black' } }
 						};
 
 			var chart = new google.visualization.PieChart(document.getElementById('chart-div'));

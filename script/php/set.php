@@ -1,14 +1,42 @@
 <?php
-	$bdd = new PDO('mysql:host=localhost;dbname=projet', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+	$options = getOptions();
+	print_r($options);
+	$arg = 'mysql:host='.$options['hostname'].';dbname='.$options['databasename'];
 
-	$name =$_POST['setter'];
-	$actionType = 'basic';
+	// Connect to the database
+	try
+	{
+		$dataBase = new PDO($arg, $options['username'] , $options['dbpassword']); 
+	}
+	catch (Exception $e)
+	{
+		die ('Error : ' . $e->getMessage());
+	}
 
-	$req = $bdd->prepare('INSERT INTO `set`(`name`) VALUES(?)');
-	$req->execute(array($name));
+	$id = $_POST['idUser'];
+	echo '<p>Registered Action for' . $id ;
 
-	$req2 = $bdd->prepare('UPDATE `set` SET `date` = CURDATE(), `action` = \'basic\' WHERE `name` = :nameSetter');
-	$req2->execute(array(':nameSetter'=> $name));
+	$reqSet = $dataBase->prepare('INSERT INTO `set`(`idUser`, `name`, `date`, `action`) VALUES(:idUser, :name, CURDATE(), "basic")');
+
+	$reqName = $dataBase->prepare('SELECT name FROM `user` WHERE id=?');
+	$reqName->execute(array($id));
+	
+
+	while ($data = $reqName->fetch()) 
+	{		
+		echo $data['name'];
+		$reqSet->execute(array(
+			'idUser' => $id,
+			'name'   => $data['name']
+			));
+	}
+
+	function getOptions ()
+	{
+		$ini_array = parse_ini_file('../../data/options.ini');
+		return $ini_array ;
+	}
+
 
 ?>	
 <!DOCTYPE html>
@@ -19,10 +47,7 @@
 </head>
 <body>
 <?php 
-	
-	echo '<p>Registered Action for' . $name ;
-
-	header("location: ../../index.php");
+	header('Location: ../../index.php');
 
   ?>
 </body>
