@@ -42,6 +42,7 @@
 	function getOptions ()
 	{
 		$ini_array = parse_ini_file('../../data/options.ini');
+		$ini_array['databasename'] = 'ActionCounter';
 		return $ini_array ;
 	}
 

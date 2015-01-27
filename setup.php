@@ -1,18 +1,30 @@
 	<?php 
 		$options = getOptions();
-		$arg = 'mysql:host='.$options['hostname'].';dbname='.$options['databasename'];
-
-		// Connect to the database 
+		$arg1 = 'mysql:host='.$options['hostname'];
+		$arg2 = 'mysql:host='.$options['hostname'].';dbname='.$options['databasename'];
+		
 		$canConnect = true;
 		try
 		{
+			$roughDB = new PDO($arg1, $options['username'], $options['dbpassword']);
+			$roughDB->exec("CREATE DATABASE IF NOT EXISTS `ActionCounter`")
+			or die(print_r($roughDB->errorInfo(), true));
+		}
+		catch (PDOException $e)
+		{
+			$canConnect = false;
+		}
+
+
+		// Connect to the database 
+		try
+		{
 			$canConnect = true;
-			$dataBase = new PDO($arg, $options['username'] , $options['dbpassword']	); 
+			$dataBase = new PDO($arg2, $options['username'] , $options['dbpassword']	); 
 		}
 		catch (Exception $e)
 		{
 			$canConnect = false;
-			/*die('Error : ' . $e->getMessage() );*/
 		}
 		if ($canConnect) 
 		{
@@ -60,7 +72,6 @@
 						<li><label>Hostname</label><input type="text" name="hostname" value="<?php echo $options['hostname'] ?>" /></li>
 						<li><label>Username</label><input type="text" name="username" value="<?php echo $options['username'] ?>" /></li>
 						<li><label>Password</label><input type="password" name="dbpassword" value="<?php echo $options['dbpassword']  ?>" /></li>
-						<li><label>Database Name</label><input type="text" name="databasename" value="<?php echo $options['databasename'] ?>"/></li>
 			</div>
 					<label><input type="submit" class="hidden-button" /><img alt="Submit" src="data/images/submit-button.svg"/></label>
 				</ul>
@@ -71,6 +82,7 @@
 		function getOptions ()
 		{
 			$ini_array = parse_ini_file('data/options.ini');
+			$ini_array['databasename'] = 'ActionCounter';
 			return $ini_array ;
 		}
 

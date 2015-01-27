@@ -10,12 +10,11 @@
 		'hostname' 		=> $_POST['hostname'],
 		'username' 		=> $_POST['username'],
 		'dbpassword' 	=> $_POST['dbpassword'],
-		'databasename'  => $_POST['databasename']
 		);
+    print_r($options);
+    header('Location: ../../setup.php');
 
 	write_ini_file($options, '../../data/options.ini');
-	header("location: ../../setup.php");
-
 
  	function write_ini_file($assoc_arr, $path, $has_sections=FALSE) { 
     $content = ""; 
